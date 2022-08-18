@@ -88,9 +88,8 @@ const int downButton = 3;
 
 const int leftButton = 4;
 
-const int rightButton = 5;
-
-const int mouseButton = 6;
+const int rightButton = 13;
+const int leftButton = 15;
 
 int range = 5;              // output range of X or Y movement; affects movement speed
 int responseDelay = 10;     // response delay of the mouse, in ms
@@ -107,7 +106,8 @@ void setup() {
 
   pinMode(rightButton, INPUT);
 
-  pinMode(mouseButton, INPUT);
+  pinMode(rightButton, INPUT);
+  pinMode(leftButton, INPUT);
 
   // initialize mouse control:
 
@@ -126,8 +126,9 @@ void loop() {
 
   int leftState = digitalRead(leftButton);
 
-  int clickState = digitalRead(mouseButton);
-
+  int leftClick = digitalRead(leftButton);
+  int rightClick = digitalRead(rightButton);
+  
   // calculate the movement distance based on the button states:
 
   int  xDistance = (leftState - rightState) * range;
@@ -141,33 +142,21 @@ void loop() {
     Mouse.move(xDistance, yDistance, 0);
 
   }
+// if the mouse left or right button is pressed, push it and wait for release
 
-  // if the mouse button is pressed:
-
-  if (clickState == HIGH) {
-
-    // if the mouse is not pressed, press it:
-
-    if (!Mouse.isPressed(MOUSE_LEFT)) {
-
-      Mouse.press(MOUSE_LEFT);
-
+  if (leftClick == HIGH) {
+    Mouse.press(MOUSE_LEFT);
+    while(leftClick == HIGH) {
+      
     }
-
+    Mouse.release(MOUSE_RIGHT);
   }
-
-  // else the mouse button is not pressed:
-
-  else {
-
-    // if the mouse is pressed, release it:
-
-    if (Mouse.isPressed(MOUSE_LEFT)) {
-
-      Mouse.release(MOUSE_LEFT);
-
+  if (rightClick == HIGH) {
+    Mouse.press(MOUSE_RIGHT);
+    while(leftClick == HIGH) {
+      
     }
-
+    Mouse.release(MOUSE_LEFT);
   }
 
   // a delay so the mouse doesn't move too fast:
